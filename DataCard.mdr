@@ -1,0 +1,192 @@
+---
+description: DataCard组件使用规范-数据卡片
+alwaysApply: false
+---
+
+# DataCard 组件使用规范
+
+标准引入方式：`import {DataCard} from '@baidu/cheetah-ui'`
+
+## 组件说明
+
+DataCard 是 cheetah-ui 的自定义数据展示卡片组件，用于展示核心数据指标（数字+单位），支持对比数据展示和悬浮气泡说明。
+
+## 核心API
+
+### DataCard 属性
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| className | 自定义类名 | string | - | 否 |
+| children | 子卡片内容，使用 DataCard.Item | ReactElement | - | 否 |
+
+### DataCard.Item 属性
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| className | 自定义类名 | string | - | 否 |
+| padding | 卡片内边距 | 20 \| 16 | 20 | 否 |
+| title | 卡片标题 | string | - | 否 |
+| doubt | 卡片悬浮气泡说明文字 | string | - | 否 |
+| num | 主数字 | number \| string | '--' | 否 |
+| unit | 主数字的单位 | string | - | 否 |
+| items | 配置展示对比内容 | Item[] | [] | 否 |
+
+## 使用规范
+
+```tsx
+import React from 'react';
+import {DataCard, App} from '@baidu/cheetah-ui';
+
+export default () => (
+    <App>
+        <DataCard>
+            <DataCard.Item
+                title="昨日收益"
+                num={1234}
+                unit="元"
+                doubt="此数据为预估收益"
+            />
+            <DataCard.Item
+                title="累计收益"
+                num="12.5万"
+                unit="元"
+            />
+        </DataCard>
+    </App>
+);
+```
+
+## 属性与 Figma 样式关联
+
+### padding 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| padding={20} | `top-[20px] left-[20px]` | 标准内边距，用于常规数据卡片 |
+| padding={16} | `top-[16px] left-[16px]` | 紧凑内边距，用于紧凑布局场景 |
+
+### 卡片容器样式特征
+
+| 元素 | Figma 样式特征 | 说明 |
+|------|----------------|------|
+| 卡片背景 | `bg-[rgba(255,255,255,1)]` | 白色背景 |
+| 卡片圆角 | `rounded-[24px]` | 圆角半径 24px |
+| 卡片边框 | `border-[rgba(4,4,4,1)]`<br/>`border-dashed`<br/>`border-2` | 虚线边框（设计稿标注用） |
+
+### title 属性与样式特征映射
+
+| 样式元素 | Figma 样式特征 | 说明 |
+|----------|----------------|------|
+| 标题文字大小 | `text-[12px]` | 标题字号 12px |
+| 标题文字颜色 | `text-[rgba(90,92,102,1)]` | 灰色文字 |
+| 标题字重 | `font-normal` | 常规字重 |
+| 标题换行 | `whitespace-nowrap` | 不换行 |
+
+### num 属性与样式特征映射
+
+| 样式元素 | Figma 样式特征 | 说明 |
+|----------|----------------|------|
+| 主数字大小 | `text-[24px]` | 主数字字号 24px |
+| 主数字颜色 | `text-[rgba(36,37,41,1)]` | 深色主文字 |
+| 主数字字重 | `font-medium` | 中等字重 |
+| 主数字换行 | `whitespace-nowrap` | 不换行 |
+| 与标题间距 | `mt-[10px]` | 距离标题 10px |
+
+### unit 属性与样式特征映射
+
+| 样式元素 | Figma 样式特征 | 说明 |
+|----------|----------------|------|
+| 单位文字大小 | `text-[14px]` | 单位字号 14px |
+| 单位文字颜色 | `text-[rgba(146,150,166,1)]` | 浅灰色文字 |
+| 单位字重 | `font-medium` | 中等字重 |
+| 单位位置 | `left-[60px]`<br/>`top-[28px]` | 相对主数字定位 |
+
+### items 对比数据项样式特征
+
+| 样式元素 | Figma 样式特征 | 说明 |
+|----------|----------------|------|
+| 对比项容器 | `flex`<br/>`justify-start`<br/>`items-center` | 水平排列对齐 |
+| 对比项间距 | `ml-[20px]` | 项之间间距 20px |
+| 对比项高度 | `h-[12px]` | 高度 12px |
+| 对比项位置 | `top-[90px]`<br/>`left-[20px]` | 距离卡片顶部 90px，左侧 20px |
+| 标签文字大小 | `text-[12px]` | 12px |
+| 标签文字颜色 | `text-[rgba(146,150,166,1)]` | 浅灰色 |
+| 数值文字大小 | `text-[12px]` | 12px |
+| 数值左边距 | `ml-[4px]` | 距离标签 4px |
+
+### items 对比数据项数值颜色样式
+
+| 数值类型 | Figma 样式特征 | 说明 |
+|----------|----------------|------|
+| 上升/增长 | `text-[rgba(245,66,66,1)]` | 红色，表示增长或上升 |
+| 下降/减少 | `text-[rgba(0,186,115,1)]` | 绿色，表示下降或减少 |
+| 正常数据 | `text-[rgba(90,92,102,1)]` | 深灰色，表示常规数据 |
+
+### 组件布局样式特征
+
+| 布局元素 | Figma 样式特征 | 说明 |
+|----------|----------------|------|
+| 垂直布局容器 | `flex`<br/>`flex-col`<br/>`justify-start`<br/>`items-start` | 垂直排列，左对齐 |
+| 水平布局容器 | `flex`<br/>`flex-row`<br/>`justify-start`<br/>`items-center` | 水平排列，垂直居中 |
+
+## 特殊样式识别规则
+
+### 内边距识别规则
+
+```
+top-[20px] left-[20px] → padding={20}
+top-[16px] left-[16px] → padding={16}
+```
+
+### 标题识别规则
+
+```
+text-[12px] + text-[rgba(90,92,102,1)] + font-normal → 标题文字样式
+```
+
+### 主数字识别规则
+
+```
+text-[24px] + text-[rgba(36,37,41,1)] + font-medium → 主数字样式
+距离标题 mt-[10px]
+```
+
+### 单位识别规则
+
+```
+text-[14px] + text-[rgba(146,150,166,1)] + font-medium → 单位文字样式
+```
+
+### 对比数据项识别规则
+
+```
+text-[rgba(245,66,66,1)] → 上升/增长数据（红色）
+text-[rgba(0,186,115,1)] → 下降/减少数据（绿色）
+text-[rgba(90,92,102,1)] → 常规数据（深灰）
+ml-[20px] → 对比项之间间距
+ml-[4px] → 标签与数值间距
+```
+
+### 卡片背景与边框规则
+
+```
+bg-[rgba(255,255,255,1)] → 白色背景
+rounded-[24px] → 圆角 24px
+border-dashed + border-2 → 虚线边框（设计标注）
+```
+# DataCard 组件外貌描述
+
+注意：在使用各个组件前，应充分了解其默认样式，避免当组件自带样式已覆盖设计稿内容时，重复生成相同元素，从而导致页面出现冗余或重复内容。
+
+## 1. 基础外观
+数据卡片容器，使用 Flex 布局排列子元素（DataCardItem）。根据子元素数量自动调整布局方式。
+
+## 2. 条件渲染元素
+
+- 子元素数量为 2 个或 3 个 → 使用特定布局
+- 子元素数量为其他值 → 使用四等分布局（quadrisection）
+
+## 说明
+DataCard 本身只是容器组件，视觉样式主要由 DataCardItem 子组件定义。DataCard 负责根据子元素数量调整整体布局。
+
