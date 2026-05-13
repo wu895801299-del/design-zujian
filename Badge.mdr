@@ -1,0 +1,274 @@
+---
+description: Badge组件使用规范
+alwaysApply: false
+---
+
+# Badge 组件使用规范
+
+标准引入方式: `import { Badge } from '@baidu/aiop-ui'`
+
+## 组件说明
+
+Badge 是基于 Ant Design Badge 的一层封装，扩展了 `statusSize` 属性，用于控制状态点徽标的尺寸大小。
+
+## 组件外貌描述
+
+Badge（徽标）组件具有三种主要的视觉形态：
+
+### 1. 数字徽标（count 模式）
+数字徽标呈现为一个红色圆角矩形标签：
+- 默认尺寸：高度约 21px，最小宽度 24px
+- 小尺寸：高度约 15px，最小宽度 22px
+- 背景色：鲜红色 `#F54242`（错误色）
+- 文字颜色：白色 `#FFFFFF`
+- 边框：无边框
+- 圆角：完全圆角，形成胶囊状
+- 字体：白色加粗数字，居中显示
+- 位置：通常定位在包裹元素的右上角，可通过 `offset` 调整偏移
+- 数字溢出：当数字超过 `overflowCount` 时显示为 `99+` 等形式
+
+### 2. 小红点（dot 模式）
+小红点呈现为一个纯色圆形指示点：
+- 直径：7px（半径 3.5px）
+- 背景色：鲜红色 `#F54242`
+- 边框：2px 白色描边 `stroke="white"`，用于与背景分离
+- 位置：通常定位在包裹元素的右上角
+- 无文字内容，仅作为状态提醒
+
+### 3. 状态点（status 模式）
+状态点由彩色圆点和文字组成，呈水平布局：
+- **默认尺寸（statusSize="middle"）**:
+  - 圆点直径：7px（半径 3.5px）
+  - 文字字号：14px（默认字号）
+  - 行高：1.5
+  - 圆点与文字间距：8px
+- **小尺寸（statusSize="small"）**:
+  - 圆点直径：6px（半径 3px）
+  - 文字字号：12px（fontSizeSM）
+  - 行高：1.5
+  - 圆点与文字间距：8px
+- **颜色映射**:
+  - `success`：绿色圆点 `#29CC8B`（成功色）
+  - `error`：红色圆点 `#F54242`（错误色）
+  - `warning`：橙色圆点 `#FFB820`（警告色）
+  - `processing`：蓝色圆点（带动画）
+  - `default`：灰色圆点
+- 文字颜色：通常为深灰色 `rgba(0, 0, 0, 0.88)`
+- 布局：圆点在左，文字在右，垂直居中对齐
+
+### 整体特征
+- 当 Badge 包裹其他元素时，徽标会绝对定位于被包裹元素的右上角
+- 独立使用时（不包裹元素），Badge 作为行内元素显示
+- 支持自定义颜色和内容，可以显示文字、图标等自定义元素
+- 动画效果：`processing` 状态的圆点带有呼吸动画效果
+
+## 核心API
+
+### 扩展属性
+
+> 说明: 扩展属性是在 Ant Design Badge 原有属性基础上的封装与扩展，用于增强组件的样式或功能能力。若扩展属性与原生属性存在同名或冲突情况，以扩展属性为准。
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| statusSize | 状态点徽标尺寸 | `'middle' \| 'small'` | `'middle'` | 否 |
+
+### 尺寸映射关系
+
+| 属性 | 状态点尺寸 | 文字字号 |
+|---|---|---|
+| statusSize="middle" | 默认尺寸 | 默认字号 |
+| statusSize="small" | 6px | 12px (fontSizeSM) |
+
+### 其他属性
+
+其余属性及 API 均继承自 Ant Design 的 Badge 组件，使用方式与 Ant Design Badge 保持一致。
+
+## 使用规范
+
+### 基础用法
+
+```tsx
+import { Badge } from '@baidu/aiop-ui';
+
+// 独立使用
+<Badge count={5} />
+<Badge count={100} />
+<Badge count={99} overflowCount={10} />
+
+// 包裹元素
+<Badge count={5}>
+  <Avatar shape="square" size="large" />
+</Badge>
+```
+
+### 状态点
+
+```tsx
+// 默认尺寸状态点
+<Badge status="success" text="Success" />
+<Badge status="error" text="Error" />
+<Badge status="default" text="Default" />
+<Badge status="processing" text="Processing" />
+<Badge status="warning" text="Warning" />
+
+// 小尺寸状态点
+<Badge status="success" text="Success" statusSize="small" />
+<Badge status="error" text="Error" statusSize="small" />
+<Badge status="default" text="Default" statusSize="small" />
+<Badge status="processing" text="Processing" statusSize="small" />
+<Badge status="warning" text="Warning" statusSize="small" />
+```
+
+### 小红点
+
+```tsx
+<Badge dot>
+  <a href="#">Link something</a>
+</Badge>
+
+<Badge dot count={0}>
+  <a href="#">Link something</a>
+</Badge>
+```
+
+### 自定义颜色
+
+```tsx
+<Badge color="blue" text="Blue" />
+<Badge color="green" text="Green" />
+<Badge color="red" text="Red" />
+<Badge color="#f50" text="Custom" />
+```
+
+### 数字显示
+
+```tsx
+// 显示数字
+<Badge count={25} />
+
+// 设置封顶数字
+<Badge count={200} overflowCount={99} />
+
+// 显示完整数字
+<Badge count={1000} showZero />
+
+// 不显示数字
+<Badge count={0} showZero />
+```
+
+### 动态变化
+
+```tsx
+import { Badge, Avatar, Button } from '@baidu/aiop-ui';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+
+const [count, setCount] = useState(5);
+
+<>
+  <Badge count={count}>
+    <Avatar shape="square" size="large" />
+  </Badge>
+  <Button onClick={() => setCount(count + 1)}>
+    <PlusOutlined />
+  </Button>
+  <Button onClick={() => setCount(count - 1)}>
+    <MinusOutlined />
+  </Button>
+</>
+```
+
+### 自定义内容
+
+```tsx
+import { Badge } from '@baidu/aiop-ui';
+import { ClockCircleOutlined } from '@ant-design/icons';
+
+<Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>
+  <Avatar shape="square" size="large" />
+</Badge>
+
+<Badge count={<span className="custom-badge">NEW</span>}>
+  <Avatar shape="square" size="large" />
+</Badge>
+```
+
+### 偏移设置
+
+```tsx
+<Badge count={5} offset={[10, 10]}>
+  <Avatar shape="square" size="large" />
+</Badge>
+```
+
+### 独立使用（不包裹元素）
+
+```tsx
+<Badge count={25} />
+<Badge count={4} className="site-badge-count-4" />
+<Badge count={109} className="site-badge-count-109" />
+```
+
+### 状态点与文本组合
+
+```tsx
+// 默认尺寸
+<Badge status="success" text="成功" />
+<Badge status="error" text="错误" />
+<Badge status="default" text="默认" />
+<Badge status="processing" text="进行中" />
+<Badge status="warning" text="警告" />
+
+// 小尺寸（使用 statusSize 扩展属性）
+<Badge status="success" text="成功" statusSize="small" />
+<Badge status="error" text="错误" statusSize="small" />
+<Badge status="processing" text="进行中" statusSize="small" />
+```
+
+## 注意事项
+
+1. **状态点尺寸**: `statusSize` 属性仅在使用 `status` 属性时生效，用于控制状态点和文字的尺寸
+2. **小尺寸样式**: `statusSize="small"` 会将状态点尺寸设置为 6px，文字字号设置为 12px
+3. **继承性**: 除 `statusSize` 外，其他所有属性与 Ant Design Badge 完全一致
+4. **适用场景**: 通常用于消息提醒、状态标识等场景
+5. **自定义样式**: 可通过 `className` 或 `style` 属性进行自定义样式设置
+
+## 属性与 Figma 样式关联
+
+本节建立组件属性值与 Figma 设计稿样式特征的映射关系，帮助从设计稿快速识别应使用的组件属性。
+
+### statusSize 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| statusSize="middle" | `r="3.5"`（圆形状态点半径7px） | 默认尺寸状态点 |
+| statusSize="small" | `r="3"`（圆形状态点半径6px）<br/>`text-[14px]` 或 `font-size:14px` | 小尺寸状态点，文字12px |
+
+### 徽标类型与样式特征映射
+
+| 使用场景 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| count 数字徽标 | `width="24" height="21"`<br/>`fill="#F54242"` | 红色数字徽标（默认尺寸） |
+| count 数字徽标（小） | `width="22" height="15"`<br/>`fill="#F54242"` | 红色数字徽标（小尺寸） |
+| dot 小红点 | `r="3.5" fill="#F54242"`<br/>`stroke="white"` | 红色圆点带白边 |
+| status 状态点 | `r="3" fill="#29CC8B"` | 绿色/其他颜色状态点 |
+
+### 特殊样式识别规则
+
+从 Figma 样式快速识别 Badge 属性的规则：
+
+```
+状态点尺寸识别：
+r="3.5" → statusSize="middle" (默认)
+r="3" → statusSize="small"
+
+徽标类型识别：
+<circle r="3.5" fill="#F54242" stroke="white"> → dot={true}
+<circle r="3"> → status 属性（配合 text 使用）
+<rect height="21"> → count 数字徽标
+<rect height="15"> → count 数字徽标（小尺寸，可能需要自定义样式）
+
+颜色识别：
+fill="#F54242" → 红色（error/默认）
+fill="#29CC8B" → 绿色（success）
+fill="#FFB820" → 橙色（warning）
+```

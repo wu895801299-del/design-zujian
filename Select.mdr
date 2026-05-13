@@ -1,0 +1,257 @@
+---
+description: Select组件使用规范
+alwaysApply: false
+---
+
+# Select 组件使用规范
+
+标准引入方式: `import {Select} from '@baidu/aiop-ui'`
+
+## 组件说明
+
+Select 是基于 Ant Design Select 的一层封装，对选择器的样式和主题进行了定制化配置，使其符合 AIOP UI 的设计规范。
+
+## 核心API
+
+### 主题定制
+
+组件内部通过 ConfigProvider 对 Ant Design Select 进行了以下主题配置：
+
+| 配置项 | 说明 | 值 |
+|---|---|---|
+| fontSizeLG | 大尺寸字体 | token.fontSize |
+| optionPadding | 选项内边距 | 0 4px |
+| optionSelectedBg | 选中项背景色 | token.colorPrimaryBg |
+| optionLineHeight | 选项行高 | 32px |
+
+### 尺寸映射关系
+
+| 属性 | 实际尺寸 |
+|---|---|
+| size="small" | 28px |
+
+### 其他属性
+
+其余属性及 API 均继承自 Ant Design 的 Select 组件，使用方式与 Ant Design Select 保持一致。
+
+完整的 API 文档请参考: [Ant Design Select](https://ant.design/components/select-cn/)
+
+## 使用规范
+
+### 基础用法
+
+```tsx
+import {Select} from '@baidu/aiop-ui';
+
+const {Option} = Select;
+
+<Select
+    placeholder="请选择"
+    style={{width: 200}}
+    onChange={(value) => console.log(value)}
+>
+    <Option value="1">选项1</Option>
+    <Option value="2">选项2</Option>
+    <Option value="3">选项3</Option>
+</Select>
+```
+
+### 小尺寸用法
+
+```tsx
+import {Select} from '@baidu/aiop-ui';
+
+const {Option} = Select;
+
+<Select
+    size="small"
+    placeholder="请选择"
+    style={{width: 200}}
+>
+    <Option value="1">选项1</Option>
+    <Option value="2">选项2</Option>
+</Select>
+```
+
+### 多选用法
+
+```tsx
+import {Select} from '@baidu/aiop-ui';
+
+<Select
+    mode="multiple"
+    placeholder="请选择多个选项"
+    style={{width: 300}}
+    onChange={(value) => console.log(value)}
+    options={[
+        {label: '选项1', value: '1'},
+        {label: '选项2', value: '2'},
+        {label: '选项3', value: '3'},
+    ]}
+/>
+```
+
+### 搜索用法
+
+```tsx
+import {Select} from '@baidu/aiop-ui';
+
+<Select
+    showSearch
+    placeholder="输入关键字搜索"
+    style={{width: 200}}
+    filterOption={(input, option) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+    }
+    options={[
+        {label: 'Apple', value: 'apple'},
+        {label: 'Banana', value: 'banana'},
+        {label: 'Cherry', value: 'cherry'},
+    ]}
+/>
+```
+
+## 注意事项
+
+1. **小尺寸样式**: 组件内置了 `size="small"` 时的样式优化，确保高度为 28px 且内容垂直居中
+2. **主题一致性**: 组件自动应用 AIOP UI 的主题 token，无需手动配置主题色
+3. **选项样式**: 选中项背景色和行高已统一配置，保持视觉一致性
+
+## 属性与 Figma 样式关联
+
+本节建立组件属性值与 Figma 设计稿样式特征的映射关系，帮助从设计稿快速识别应使用的组件属性。
+
+### size 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| size="small" | `h-[28px]` | 小尺寸选择器（28px高度） |
+| size="middle" | `h-[32px]` | 中尺寸选择器（32px高度，默认） |
+| size="large" | `h-[40px]` | 大尺寸选择器（40px高度） |
+
+### mode 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| 默认（单选） | 单个输入框<br/>`border-[1px]` | 单选模式，显示单个选中值 |
+| mode="multiple" | 多个标签容器<br/>`bg-[rgba(247,249,253,1)]`<br/>标签 `h-[24px]` | 多选模式，以标签形式展示选中值 |
+| mode="tags" | 支持输入的标签<br/>可关闭标签图标 | 标签模式，支持自定义输入 |
+
+### 状态属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| disabled={true} | `opacity-[0.4]`<br/>`cursor-not-allowed`<br/>`bg-[rgba(245,245,247,1)]` | 禁用状态，低透明度灰色背景 |
+| status="error" | `border-[rgba(250,78,62,1)]`<br/>`border-[1px]` | 错误状态，红色边框 |
+| status="warning" | `border-[rgba(255,170,0,1)]`<br/>`border-[1px]` | 警告状态，橙色边框 |
+
+### 特殊样式识别规则
+
+从 Figma 样式快速识别 Select 属性的规则：
+
+```
+尺寸识别：
+h-[28px] → size="small"
+h-[32px] → size="middle" (默认)
+h-[40px] → size="large"
+
+模式识别：
+单个输入框 + border-[1px] → 默认单选模式
+多个标签容器 + bg-[rgba(247,249,253,1)] → mode="multiple"
+可输入标签 + 关闭图标 → mode="tags"
+
+状态识别：
+opacity-[0.4] + cursor-not-allowed → disabled={true}
+border-[rgba(250,78,62,1)] → status="error"
+border-[rgba(255,170,0,1)] → status="warning"
+```
+
+## Select 组件外貌描述
+
+> 注意: 在使用 Select 组件前，应充分了解其默认样式，避免当组件自带样式已覆盖设计稿内容时，重复生成相同元素，从而导致页面出现冗余或重复内容。
+
+### 1. 基础外观
+
+- 圆角矩形选择器，带边框
+- 右侧默认显示后缀图标（下拉箭头图标）
+- 内边距样式由 Ant Design 默认提供
+
+### 2. 可变视觉 (Props 控制)
+
+- **size**:
+  - 控制内容: 选择器的高度
+  - 默认值: middle
+  - 视觉影响:
+    - large: 高度 40px
+    - middle: 高度 32px
+    - small: 高度 28px（已优化行高和垂直居中）
+
+- **mode**:
+  - 控制内容: 选择模式（单选/多选）
+  - 默认值: 无（单选模式）
+  - 视觉影响:
+    - 未设置: 单选模式，选择器内显示单个选中值或占位符，右侧显示下拉箭头
+    - multiple: 多选模式，选择器内显示多个标签，标签高度 24px，标签背景色为浅蓝色
+    - tags: 标签模式，与 multiple 类似，但支持用户输入自定义标签
+
+- **suffixIcon**:
+  - 控制内容: 后缀图标（由用户传入）
+  - 默认值: 下拉箭头图标
+  - 视觉影响: 替换默认下拉箭头图标
+
+- **placeholder**:
+  - 控制内容: 占位符文本
+  - 默认值: 无
+  - 视觉影响: 未选择时显示的提示文本
+
+- **disabled**:
+  - 控制内容: 禁用状态
+  - 默认值: false
+  - 视觉影响: true 时背景色变为浅灰色，不可点击
+
+- **status**:
+  - 控制内容: 验证状态
+  - 默认值: 无
+  - 视觉影响:
+    - error: 边框显示为红色
+    - warning: 边框显示为橙色
+
+- **showSearch**:
+  - 控制内容: 是否可搜索
+  - 默认值: 单选 false，多选 true
+  - 视觉影响: true 时可在选择器内输入文本进行搜索
+
+### 3. 条件渲染元素
+
+- `mode="multiple"` 或 `mode="tags"` → 选择器内显示多个标签，每个标签右侧显示删除图标
+- `mode` 未设置 → 单选模式，选择器内仅显示单个选中值
+- `showArrow=true` → 显示后缀下拉箭头图标
+- `showArrow=false` → 不显示后缀下拉箭头图标
+
+### 4. 模式差异
+
+- **单选模式** (mode 未设置):
+  - 选择器内显示单个选中值或占位符
+  - 右侧默认显示下拉箭头图标
+  - 高度固定
+
+- **多选模式** (mode="multiple" 或 mode="tags"):
+  - 选择器内显示多个标签
+  - 标签以水平方式排列，超出时换行
+  - 每个标签右侧显示删除图标
+  - 多选模式下右侧默认不显示下拉箭头图标
+
+### 5. 状态样式
+
+- **normal**: 白色背景，边框显示
+- **hover**: 边框颜色变化（主题色）
+- **focus**: 边框颜色变化（主题色），可能显示外轮廓线
+- **disabled**: 浅灰色背景，不可点击
+- **error**: 边框显示为红色
+- **warning**: 边框显示为橙色
+
+### 6. 下拉选项样式
+
+- 选项内边距: 0 4px
+- 选项行高: 32px
+- 选中项背景色: 主题色浅背景（由 token.colorPrimaryBg 控制）

@@ -1,0 +1,244 @@
+---
+description: Input组件使用规范
+alwaysApply: false
+---
+
+# Input 组件使用规范
+
+标准引入方式: `import Input from '@baidu/aiop-ui'`
+
+## 组件说明
+
+Input 是基于 Ant Design Input 的一层封装，扩展了 `width` 属性用于快速设置输入框宽度，并优化了默认字体大小配置。
+
+## 核心API
+
+### 扩展属性
+
+> 说明: 扩展属性是在 Ant Design Input 原有属性基础上的封装与扩展，用于增强组件的样式或功能能力。若扩展属性与原生属性存在同名或冲突情况，以扩展属性为准。
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| width | 输入框宽度 | `string \| undefined` | `'240px'` | 否 |
+
+### 其他属性
+
+其余属性及 API 均继承自 Ant Design 的 Input 组件，使用方式与 Ant Design Input 保持一致。
+
+## 使用规范
+
+### 基础用法
+
+```tsx
+import Input from '@baidu/aiop-ui';
+
+// 基础输入框
+<Input placeholder="请输入内容" />
+
+// 带默认值
+<Input defaultValue="默认值" />
+
+// 受控输入框
+<Input value={value} onChange={(e) => setValue(e.target.value)} />
+```
+
+### 宽度控制
+
+```tsx
+// 使用默认宽度（240px）
+<Input placeholder="默认宽度" />
+
+// 自定义宽度（像素值）
+<Input placeholder="自定义宽度" width="300px" />
+
+// 自定义宽度（百分比）
+<Input placeholder="百分比宽度" width="100%" />
+
+// 自定义宽度（其他单位）
+<Input placeholder="相对单位" width="20em" />
+```
+
+### 不同尺寸
+
+```tsx
+// 大尺寸
+<Input size="large" placeholder="大尺寸输入框" />
+
+// 中尺寸（默认）
+<Input size="middle" placeholder="中尺寸输入框" />
+
+// 小尺寸
+<Input size="small" placeholder="小尺寸输入框" />
+```
+
+### 输入框状态
+
+```tsx
+// 禁用状态
+<Input disabled placeholder="禁用状态" />
+
+// 只读状态
+<Input readOnly defaultValue="只读内容" />
+
+// 错误状态
+<Input status="error" placeholder="错误状态" />
+
+// 警告状态
+<Input status="warning" placeholder="警告状态" />
+```
+
+### 带前后缀
+
+```tsx
+import { UserOutlined, SearchOutlined } from '@ant-design/icons';
+
+// 前缀图标
+<Input prefix={<UserOutlined />} placeholder="请输入用户名" />
+
+// 后缀图标
+<Input suffix={<SearchOutlined />} placeholder="请输入搜索内容" />
+
+// 前后置标签
+<Input addonBefore="Http://" addonAfter=".com" placeholder="网址" />
+```
+
+### 密码输入框
+
+```tsx
+// 使用 Input.Password
+<Input.Password placeholder="请输入密码" width="300px" />
+```
+
+### 文本域
+
+```tsx
+// 使用 Input.TextArea
+<Input.TextArea rows={4} placeholder="请输入多行文本" />
+```
+
+### 搜索框
+
+```tsx
+// 使用 Input.Search
+<Input.Search placeholder="搜索内容" onSearch={(value) => console.log(value)} width="300px" />
+```
+
+## 注意事项
+
+1. **宽度设置**: `width` 属性接受任何有效的 CSS 宽度值（如 `'240px'`、`'50%'`、`'20em'` 等），默认为 `'240px'`
+2. **组合使用**: Input 的所有子组件（`Input.Password`、`Input.TextArea`、`Input.Search` 等）同样支持 `width` 属性
+3. **字体大小**: 大尺寸输入框（`size="large"`）的字体大小已优化为 14px，确保文本显示清晰
+
+## 属性与 Figma 样式关联
+
+本节建立组件属性值与 Figma 设计稿样式特征的映射关系，帮助从设计稿快速识别应使用的组件属性。
+
+### size 属性与样式特征映射
+
+| 属性值 | Figma 尺寸标注 | 说明 |
+|--------|----------------|------|
+| size="large" | 尺寸：L | 大尺寸输入框 |
+| size="middle" | 尺寸：M | 中尺寸输入框（默认） |
+| size="small" | 尺寸：S | 小尺寸输入框 |
+
+**说明**: Figma 设计稿中通过尺寸标注（L/M/S/XS）来区分不同大小的输入框。组件库目前支持 large、middle、small 三种尺寸。
+
+### 状态属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| status="error" | `bg-[rgba(255,244,240,1)]`<br/>`text-[rgba(250,78,62,1)]`<br/>标注：Error | 错误状态，浅红背景 |
+
+**说明**: Figma 设计稿中标注为 "Error" 的输入框对应 `status="error"` 属性。错误状态下输入框周边会使用浅红色背景来突出显示。
+
+### width 属性说明
+
+`width` 属性是扩展属性，用于控制输入框宽度，默认值为 `'240px'`。此属性在 Figma 中体现为输入框的实际宽度尺寸，需根据设计稿的具体宽度值进行设置。
+
+## Input 组件外貌描述
+
+> 注意: 在使用 Input 组件前，应充分了解其默认样式，避免当组件自带样式已覆盖设计稿内容时，重复生成相同元素，从而导致页面出现冗余或重复内容。
+
+### 1. 基础外观
+
+- 圆角矩形输入框，白色背景
+- 左右内边距适中，具有边框线
+- 行内块级元素展示
+
+### 2. 可变视觉 (Props 控制)
+
+- **width**:
+  - 控制内容: 输入框宽度
+  - 默认值: 240px
+  - 视觉影响: 接受任何有效 CSS 宽度值（如 '300px'、'100%'、'20em'）
+
+- **size**:
+  - 控制内容: 输入框高度和字体大小
+  - 默认值: middle
+  - 视觉影响:
+    - large: 字体大小 14px（通过主题配置覆盖）
+    - middle: 默认高度和字体大小
+    - small: 较小高度和字体大小
+
+- **status**:
+  - 控制内容: 输入框状态样式
+  - 默认值: 无
+  - 视觉影响:
+    - error: 错误状态边框和背景色
+    - warning: 警告状态边框和背景色
+
+- **prefix**:
+  - 控制内容: 输入框前缀内容（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 存在时在输入框左侧显示前缀图标或文本
+
+- **suffix**:
+  - 控制内容: 输入框后缀内容（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 存在时在输入框右侧显示后缀图标或文本
+
+- **placeholder**:
+  - 控制内容: 占位符文本（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 输入框为空时显示浅色提示文本
+
+- **disabled**:
+  - 控制内容: 禁用状态
+  - 默认值: false
+  - 视觉影响: true 时输入框背景变为禁用色，文字颜色变浅，不可编辑
+
+- **readOnly**:
+  - 控制内容: 只读状态
+  - 默认值: false
+  - 视觉影响: true 时输入框不可编辑但保持常规样式
+
+- **addonBefore**:
+  - 控制内容: 前置标签（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 存在时在输入框左侧显示独立的前置标签区域
+
+- **addonAfter**:
+  - 控制内容: 后置标签（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 存在时在输入框右侧显示独立的后置标签区域
+
+### 3. 条件渲染元素
+
+- `prefix` 存在 → 输入框左侧显示前缀内容
+- `prefix` 不存在 → 输入框左侧无前缀内容
+- `suffix` 存在 → 输入框右侧显示后缀内容
+- `suffix` 不存在 → 输入框右侧无后缀内容
+- `addonBefore` 存在 → 输入框左侧显示前置标签区域
+- `addonBefore` 不存在 → 无前置标签区域
+- `addonAfter` 存在 → 输入框右侧显示后置标签区域
+- `addonAfter` 不存在 → 无后置标签区域
+
+### 4. 状态样式
+
+- **normal**: 白色背景，常规边框色
+- **hover**: 边框颜色变化（继承 Ant Design）
+- **focus**: 聚焦边框色和外阴影效果（继承 Ant Design）
+- **disabled**: 禁用背景色，文字颜色变浅，不可编辑
+- **readOnly**: 保持常规样式但不可编辑
+- **error**: 错误状态边框和背景色
+- **warning**: 警告状态边框和背景色

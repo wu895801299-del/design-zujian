@@ -1,0 +1,240 @@
+---
+description: Button组件使用规范
+alwaysApply: false
+---
+
+# Button 组件使用规范
+
+标准引入方式: `import Button from '@baidu/aiop-ui'`
+
+## 组件说明
+
+Button 是基于 Ant Design Button 的一层封装，扩展了 `secondary`、`success`、`warning` 三种按钮样式类型，并优化了默认尺寸配置。
+
+## 核心API
+
+### 扩展属性
+
+> 说明: 扩展属性是在 Ant Design Button 原有属性基础上的封装与扩展，用于增强组件的样式或功能能力。若扩展属性与原生属性存在同名或冲突情况，以扩展属性为准。
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| type | 按钮类型，扩展了 `secondary` 类型 | `'primary' \| 'secondary' \| 'default' \| 'dashed' \| 'text' \| 'link'` | `'default'` | 否 |
+| success | 成功状态样式 | `boolean` | `false` | 否 |
+| warning | 警告状态样式 | `boolean` | `false` | 否 |
+| size | 按钮尺寸 | `'large' \| 'middle' \| 'small'` | `'middle'` | 否 |
+
+### 尺寸映射关系
+
+| 属性 | 实际尺寸 |
+|---|---|
+| size="large" | 36px |
+| size="middle" | 32px |
+| size="small" | 28px |
+
+### 其他属性
+
+其余属性及 API 均继承自 Ant Design 的 Button 组件，使用方式与 Ant Design Button 保持一致。
+
+## 使用规范
+
+### 基础用法
+
+```tsx
+import Button from '@baidu/aiop-ui';
+
+// 基础按钮类型
+<Button type="primary">一级按钮</Button>
+<Button type="secondary">二级按钮</Button>
+<Button>三级按钮</Button>
+<Button type="dashed">虚线按钮</Button>
+<Button type="text">文字按钮</Button>
+<Button type="link">链接按钮</Button>
+```
+
+### 尺寸控制
+
+```tsx
+<Button type="primary" size="large">大按钮</Button>
+<Button type="primary" size="middle">中按钮</Button>
+<Button type="primary" size="small">小按钮</Button>
+```
+
+### 状态样式
+
+```tsx
+// 成功状态
+<Button type="primary" success>成功按钮</Button>
+<Button success>成功按钮（默认样式）</Button>
+
+// 警告状态
+<Button type="primary" warning>警告按钮</Button>
+<Button warning>警告按钮（默认样式）</Button>
+
+// 危险状态（继承自 Ant Design）
+<Button type="primary" danger>危险按钮</Button>
+
+// 禁用状态
+<Button disabled>禁用按钮</Button>
+
+// 加载中状态
+<Button loading>加载中</Button>
+```
+
+### 带图标
+
+```tsx
+import { PoweroffOutlined } from '@ant-design/icons';
+
+<Button icon={<PoweroffOutlined />} type="primary">带图标</Button>
+<Button icon={<PoweroffOutlined />} />
+```
+
+## 注意事项
+
+1. **类型互斥**: `success` 和 `warning` 属性主要用于修改颜色样式，建议与 `type="primary"` 或 `type="default"` 配合使用，不要与 `danger` 同时使用
+2. **二级按钮**: `type="secondary"` 实际渲染为边框带主题色的默认按钮，适用于次要操作场景
+
+## 属性与 Figma 样式关联
+
+本节建立组件属性值与 Figma 设计稿样式特征的映射关系，帮助从设计稿快速识别应使用的组件属性。
+
+### size 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| size="large" | `h-[36px]` | 大尺寸按钮（36px高度） |
+| size="middle" | `h-[32px]` | 中尺寸按钮（32px高度，默认） |
+| size="small" | `h-[28px]` | 小尺寸按钮（28px高度） |
+
+### type 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| type="primary" | `bg-[rgba(56,85,213,1)]`<br/>`text-[rgba(255,255,255,1)]` | 主要按钮，蓝色背景白色文字 |
+| type="secondary" | `border-[1px] border-[rgba(56,85,213,1)]`<br/>`text-[rgba(56,85,213,1)]` | 次要按钮，蓝色边框和文字 |
+| type="default" | `border-[1px] border-[rgba(213,214,217,1)]`<br/>`text-[rgba(0,0,0,1)]` | 默认按钮，灰色边框黑色文字 |
+| type="text" | `border-none`<br/>`text-[rgba(56,85,213,1)]` | 文字按钮，无边框蓝色文字 |
+| type="link" | `border-none`<br/>`text-[rgba(56,85,213,1)]`<br/>`underline` | 链接按钮，无边框带下划线 |
+
+### 状态属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| disabled={true} | `opacity-[0.4]`<br/>`cursor-not-allowed`<br/>`bg-[rgba(245,245,247,1)]` | 禁用状态，低透明度灰色背景 |
+| success={true} + type="primary" | `bg-[rgba(0,176,89,1)]`<br/>`text-[rgba(255,255,255,1)]` | 成功按钮，绿色背景白色文字 |
+| warning={true} + type="primary" | `bg-[rgba(255,170,0,1)]`<br/>`text-[rgba(255,255,255,1)]` | 警告按钮，橙色背景白色文字 |
+| danger={true} + type="primary" | `bg-[rgba(250,78,62,1)]`<br/>`text-[rgba(255,255,255,1)]` | 危险按钮，红色背景白色文字 |
+
+### 特殊样式识别规则
+
+从 Figma 样式快速识别按钮属性的规则：
+
+```
+尺寸识别：
+h-[36px] → size="large"
+h-[32px] → size="middle" (默认)
+h-[28px] → size="small"
+
+类型识别：
+bg-[rgba(56,85,213,1)] → type="primary"
+border-[rgba(56,85,213,1)] + 无背景 → type="secondary"
+border-[rgba(213,214,217,1)] → type="default"
+无边框 + text-[rgba(56,85,213,1)] → type="text"
+
+语义状态识别：
+bg-[rgba(0,176,89,1)] → success={true} + type="primary"
+bg-[rgba(255,170,0,1)] → warning={true} + type="primary"
+bg-[rgba(250,78,62,1)] → danger={true} + type="primary"
+
+禁用状态识别：
+opacity-[0.4] + cursor-not-allowed → disabled={true}
+```
+
+## Button 组件外貌描述
+
+> 注意: 在使用 Button 组件前，应充分了解其默认样式，避免当组件自带样式已覆盖设计稿内容时，重复生成相同元素，从而导致页面出现冗余或重复内容。
+
+### 1. 基础外观
+
+- 圆角矩形按钮，圆角尺寸继承 Ant Design 默认配置
+- 默认高度 32px（middle 尺寸）
+- 默认类型为 default（灰色边框，白色背景，黑色文字）
+- 按钮内容由 children 属性传入
+- 字体大小：large 尺寸为 14px，其他尺寸继承 Ant Design 默认配置
+
+### 2. 可变视觉 (Props 控制)
+
+- **size**:
+  - 控制内容: 按钮高度和内边距
+  - 默认值: middle
+  - 视觉影响:
+    - large: 高度 36px
+    - middle: 高度 32px
+    - small: 高度 28px
+
+- **type**:
+  - 控制内容: 按钮的边框、背景色和文字颜色
+  - 默认值: default
+  - 视觉影响:
+    - primary: 主题色背景，白色文字
+    - secondary: 主题色边框，主题色文字，白色背景
+    - default: 次要边框色，常规文字色，白色背景
+    - dashed: 虚线边框，常规文字色，白色背景
+    - text: 无边框，主题色文字，无背景色
+    - link: 无边框，主题色文字，无背景色，带下划线
+
+- **success**:
+  - 控制内容: 成功状态的颜色样式
+  - 默认值: false
+  - 视觉影响:
+    - 与 type="primary" 组合: 成功色背景，白色文字，成功色边框
+    - 与 type="default" 组合: 成功色边框，成功色文字，白色背景
+    - hover 状态: 成功色悬停态背景和边框（primary），成功色悬停态边框和文字（default）
+
+- **warning**:
+  - 控制内容: 警告状态的颜色样式
+  - 默认值: false
+  - 视觉影响:
+    - 与 type="primary" 组合: 警告色背景，白色文字，警告色边框
+    - 与 type="default" 组合: 警告色边框，警告色文字，白色背景
+    - hover 状态: 警告色悬停态背景和边框（primary），警告色悬停态边框和文字（default）
+
+- **icon**:
+  - 控制内容: 按钮前置图标（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 图标显示在按钮文字左侧
+
+- **loading**:
+  - 控制内容: 加载中状态
+  - 默认值: false
+  - 视觉影响: true 时显示加载图标（替换 icon），鼠标指针为不可点击状态
+
+### 3. 条件渲染元素
+
+- `icon` 存在 → 在按钮文字左侧显示图标
+- `loading=true` → 显示加载中图标，替换 icon 属性传入的图标
+- `children` 不存在且 icon 存在 → 按钮仅显示图标，无文字内容
+- `children` 存在 → 显示按钮文字内容
+
+### 4. 状态样式
+
+- **normal**: 
+  - type="primary": 主题色背景，白色文字
+  - type="secondary": 主题色边框和文字，白色背景
+  - type="default": 次要边框色，常规文字色，白色背景
+
+- **hover**:
+  - type="primary": 主题色悬停态背景
+  - type="secondary": 背景保持白色，边框和文字颜色不变
+  - type="default": 主题色悬停态边框和文字
+  - success/warning 组合: 对应的悬停态颜色
+
+- **disabled**:
+  - 所有类型: 次要边框色边框，禁用文字色，禁用背景色
+  - secondary: 次要边框色边框，禁用文字色，禁用背景色
+  - success/warning 组合: 禁用样式覆盖成功/警告样式，表现为统一的禁用态
+
+- **loading**:
+  - 鼠标指针显示为不可点击状态（not-allowed）
+  - hover 时保持不可点击状态，不触发 hover 样式变化

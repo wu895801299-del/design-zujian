@@ -1,0 +1,319 @@
+---
+description: Modal组件使用规范
+alwaysApply: false
+---
+
+# Modal 组件使用规范
+
+标准引入方式: `import Modal from '@baidu/aiop-ui'`
+
+## 组件说明
+
+Modal 是基于 Ant Design Modal 的一层封装，扩展了 `size` 和 `type` 属性，增强了弹窗的尺寸控制和标题图标展示能力。
+
+## 使用场景
+
+- 需要用户处理事务，又不希望跳转页面以致打断工作流程时，可以使用 Modal 在当前页面正中打开一个浮层，承载相应的操作
+- 需要向用户展示重要信息或警告时，通过不同的 type 类型展示对应的标题图标
+- 需要标准化弹窗尺寸时，使用 size 属性控制
+
+## 核心API
+
+### 扩展属性
+
+> 说明: 扩展属性是在 Ant Design Modal 原有属性基础上的封装与扩展，用于增强组件的样式或功能能力。若扩展属性与原生属性存在同名或冲突情况，以扩展属性为准。
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| size | 弹窗尺寸，控制弹窗宽度 | `'small' \| 'middle'` | `'middle'` | 否 |
+| type | 弹窗类型，控制标题前的图标显示 | `'default' \| 'notification' \| 'warning' \| 'error'` | `'default'` | 否 |
+
+### 尺寸映射关系
+
+| 属性 | 实际宽度 |
+|---|---|
+| size="middle" | 560px |
+| size="small" | 400px |
+
+### type 类型说明
+
+`type` 属性控制标题前显示的图标和图标颜色：
+
+- **default**: 无图标
+- **notification**: 显示感叹号图标（蓝色，使用主题色）
+- **warning**: 显示警告图标（橙色，使用警告色）
+- **error**: 显示错误图标（红色，使用错误色）
+
+### 其他属性
+
+其余属性及 API 均继承自 Ant Design 的 Modal 组件，使用方式与 Ant Design Modal 保持一致。
+
+## 使用规范
+
+### 基础用法
+
+```tsx
+import Modal from '@baidu/aiop-ui';
+
+// 基础弹窗
+<Modal
+  title="基础弹窗"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>弹窗内容</p>
+</Modal>
+```
+
+### 尺寸控制
+
+```tsx
+// 中尺寸弹窗（默认 560px）
+<Modal
+  title="中尺寸弹窗"
+  size="middle"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>这是一个中尺寸弹窗</p>
+</Modal>
+
+// 小尺寸弹窗（400px）
+<Modal
+  title="小尺寸弹窗"
+  size="small"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>这是一个小尺寸弹窗</p>
+</Modal>
+
+// 自定义宽度（优先级高于 size）
+<Modal
+  title="自定义宽度"
+  width={800}
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>这是一个自定义宽度的弹窗</p>
+</Modal>
+```
+
+### 不同类型的弹窗
+
+```tsx
+// 默认类型（无图标）
+<Modal
+  title="默认弹窗"
+  type="default"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>默认弹窗内容</p>
+</Modal>
+
+// 通知类型（带蓝色感叹号图标）
+<Modal
+  title="通知"
+  type="notification"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>这是一条重要通知</p>
+</Modal>
+
+// 警告类型（带橙色警告图标）
+<Modal
+  title="警告"
+  type="warning"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>这是一条警告信息</p>
+</Modal>
+
+// 错误类型（带红色错误图标）
+<Modal
+  title="错误"
+  type="error"
+  open={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+  <p>操作失败，请重试</p>
+</Modal>
+```
+
+### 完整示例
+
+```tsx
+import { useState } from 'react';
+import Modal from '@baidu/aiop-ui';
+
+function App() {
+  const [visible, setVisible] = useState(false);
+
+  const handleOk = () => {
+    // 处理确认逻辑
+    setVisible(false);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  return (
+    <>
+      <Button onClick={() => setVisible(true)}>打开弹窗</Button>
+      <Modal
+        title="确认删除"
+        type="warning"
+        size="small"
+        open={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="确认"
+        cancelText="取消"
+      >
+        <p>确定要删除该项吗？删除后无法恢复。</p>
+      </Modal>
+    </>
+  );
+}
+```
+
+## 注意事项
+
+1. **宽度优先级**: 当同时设置 `size` 和 `width` 属性时，`width` 属性优先级更高，会覆盖 `size` 设置的默认宽度
+2. **type 与 title**: `type` 属性只控制标题前的图标，不影响弹窗的其他行为，需要配合 `title` 属性一起使用才能看到效果
+3. **按钮样式**: Modal 内的按钮会自动应用统一的样式规范（高度 32px，按钮间距 16px）
+4. **内边距**: Modal 的内容区域默认 padding 为 32px，关闭按钮位置也相应调整
+
+## 属性与 Figma 样式关联
+
+本节建立组件属性值与 Figma 设计稿样式特征的映射关系，帮助从设计稿快速识别应使用的组件属性。
+
+### size 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| size="middle" | `w-[560px]` | 中尺寸弹窗（560px宽度，默认） |
+| size="small" | `w-[400px]` | 小尺寸弹窗（400px宽度） |
+
+### type 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| type="default" | 无图标标识 | 默认弹窗，标题前无图标 |
+| type="notification" | 带蓝色感叹号图标 | 通知类型弹窗，标题前显示蓝色图标 |
+| type="warning" | 带橙色警告图标 | 警告类型弹窗，标题前显示橙色图标 |
+| type="error" | 带红色错误图标 | 错误类型弹窗，标题前显示红色图标 |
+
+### 特殊样式识别规则
+
+从 Figma 样式快速识别 Modal 属性的规则：
+
+```
+尺寸识别：
+w-[560px] → size="middle" (默认)
+w-[400px] → size="small"
+
+类型识别：
+Figma 标注 "常规" → type="default"
+Figma 标注 "提示-通知" + 蓝色图标 → type="notification"
+Figma 标注 "提示-警告" + 橙色图标 → type="warning"
+Figma 标注 "提示-报错" + 红色图标 → type="error"
+```
+
+## Modal 组件外貌描述
+
+> 注意: 在使用 Modal 组件前，应充分了解其默认样式，避免当组件自带样式已覆盖设计稿内容时，重复生成相同元素，从而导致页面出现冗余或重复内容。
+
+### 1. 基础外观
+
+- 圆角矩形浮层，居中显示在页面中央
+- 内容区域默认内边距 32px（上下左右）
+- 右上角默认显示关闭按钮（距离上边缘 34px，距离右边缘 32px）
+- 弹窗外有半透明遮罩层
+
+### 2. 可变视觉 (Props 控制)
+
+- **size**:
+  - 控制内容: 弹窗的宽度
+  - 默认值: middle
+  - 视觉影响:
+    - middle: 宽度 560px
+    - small: 宽度 400px
+
+- **width**:
+  - 控制内容: 自定义弹窗宽度（由用户传入）
+  - 默认值: 根据 size 属性确定（middle: 560px, small: 400px）
+  - 视觉影响: 覆盖 size 属性的默认宽度
+
+- **type**:
+  - 控制内容: 标题前的图标显示
+  - 默认值: default
+  - 视觉影响:
+    - default: 标题前无图标
+    - notification: 标题前显示蓝色感叹号图标（ExclamationCircleFilled），图标右侧间距 4px
+    - warning: 标题前显示橙色警告图标（WarningFilled），图标右侧间距 4px
+    - error: 标题前显示红色错误图标（CloseCircleFilled），图标右侧间距 4px
+
+- **title**:
+  - 控制内容: 标题区域的文字内容（由用户传入）
+  - 默认值: 无
+  - 视觉影响: 显示在头部区域，根据 type 属性可能在左侧显示图标
+
+- **footer**:
+  - 控制内容: 底部操作区域内容（由用户传入）
+  - 默认值: 默认显示"确定"和"取消"两个按钮
+  - 视觉影响: 
+    - 未设置时: 底部显示"取消"和"确定"两个按钮，右对齐，按钮间距 16px，距离内容区域上边距 24px
+    - 设置为 null: 不显示底部操作区域
+    - 自定义内容: 显示用户传入的自定义内容
+
+### 3. 条件渲染元素
+
+- `title` 存在 → 显示标题区域，根据 type 属性可能在标题左侧显示图标
+- `title` 不存在 → 不显示标题区域，仅显示右上角关闭按钮
+- `footer` 未设置 → 显示默认底部操作栏（"取消"和"确定"按钮）
+- `footer` 设置为 null → 不显示底部操作栏
+- `footer` 设置为自定义内容 → 显示用户传入的自定义底部内容
+
+### 4. 模式差异
+
+- **default 类型** (type="default" 或未设置):
+  - 标题无前置图标
+  - 仅显示标题文字
+
+- **notification 类型** (type="notification"):
+  - 标题左侧显示蓝色感叹号图标（ExclamationCircleFilled）
+  - 图标与标题文字间距 4px
+  - 图标颜色使用主题色
+
+- **warning 类型** (type="warning"):
+  - 标题左侧显示橙色警告图标（WarningFilled）
+  - 图标与标题文字间距 4px
+  - 图标颜色使用警告色
+
+- **error 类型** (type="error"):
+  - 标题左侧显示红色错误图标（CloseCircleFilled）
+  - 图标与标题文字间距 4px
+  - 图标颜色使用错误色
+
+### 5. 状态样式
+
+- **按钮样式**:
+  - 按钮高度统一为 32px
+  - 按钮内边距 6px 上下，16px 左右
+  - 按钮行高为 1
+  - 按钮之间间距 16px
+  - 次级按钮边框和文字使用主题色，hover 时使用主题色悬停态
+  - 禁用按钮显示填充色背景和禁用文字色

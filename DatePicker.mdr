@@ -1,0 +1,353 @@
+---
+description: DatePicker组件使用规范
+alwaysApply: false
+---
+
+# DatePicker 组件使用规范
+
+标准引入方式: `import { DatePicker } from '@baidu/aiop-ui'`
+
+## 组件说明
+
+DatePicker 是基于 Ant Design DatePicker 的一层封装，优化了边框圆角和激活状态边框颜色，提供统一的日期选择交互体验。组件包含单日期选择器（DatePicker）和日期范围选择器（RangePicker）。
+
+## 核心API
+
+### 扩展属性
+
+> 说明: 扩展属性是在 Ant Design DatePicker 原有属性基础上的主题样式优化，用于保持与设计规范的一致性。
+
+| 属性 | 说明 | 类型 | 默认值 | 必填 |
+|---|---|---|---|---|
+| borderRadius | 边框圆角 | `number` | `4` | 否 |
+| activeBorderColor | 激活状态边框颜色 | `string` | 主题色 | 否 |
+
+### 其他属性
+
+其余属性及 API 均继承自 Ant Design 的 DatePicker 组件，使用方式与 Ant Design DatePicker 保持一致。
+
+完整 API 请参考：[Ant Design DatePicker 文档](https://ant.design/components/date-picker-cn/)
+
+## 使用规范
+
+### 基础用法
+
+```tsx
+import { DatePicker } from '@baidu/aiop-ui';
+import dayjs from 'dayjs';
+
+// 基础日期选择器
+<DatePicker placeholder="请选择日期" />
+
+// 带默认值
+<DatePicker defaultValue={dayjs('2024-01-01')} />
+
+// 受控模式
+const [date, setDate] = useState(null);
+<DatePicker value={date} onChange={setDate} />
+```
+
+### 日期格式
+
+```tsx
+// 自定义日期格式
+<DatePicker format="YYYY/MM/DD" />
+<DatePicker format="YYYY年MM月DD日" />
+
+// 时间选择器
+<DatePicker showTime placeholder="选择日期时间" />
+<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+```
+
+### 日期范围选择
+
+```tsx
+import { DatePicker } from '@baidu/aiop-ui';
+
+const { RangePicker } = DatePicker;
+
+// 基础范围选择
+<RangePicker />
+
+// 带默认值
+<RangePicker 
+  defaultValue={[dayjs('2024-01-01'), dayjs('2024-12-31')]} 
+/>
+
+// 带时间选择
+<RangePicker showTime />
+```
+
+### 禁用日期
+
+```tsx
+// 禁用过去日期
+<DatePicker 
+  disabledDate={(current) => current && current < dayjs().startOf('day')}
+/>
+
+// 禁用未来日期
+<DatePicker 
+  disabledDate={(current) => current && current > dayjs().endOf('day')}
+/>
+
+// 禁用指定范围
+<RangePicker
+  disabledDate={(current) => {
+    const tooEarly = current < dayjs('2024-01-01');
+    const tooLate = current > dayjs('2024-12-31');
+    return tooEarly || tooLate;
+  }}
+/>
+```
+
+### 尺寸控制
+
+```tsx
+// 三种尺寸
+<DatePicker size="large" />
+<DatePicker size="middle" />
+<DatePicker size="small" />
+
+<RangePicker size="large" />
+```
+
+### 状态控制
+
+```tsx
+// 禁用状态
+<DatePicker disabled />
+
+// 只读状态
+<DatePicker inputReadOnly />
+
+// 状态标记
+<DatePicker status="error" />
+<DatePicker status="warning" />
+```
+
+### 面板扩展
+
+```tsx
+// 额外的页脚
+<DatePicker 
+  renderExtraFooter={() => '额外的页脚内容'}
+/>
+
+// 自定义渲染日期单元格
+<DatePicker
+  dateRender={(current) => {
+    const style = {};
+    if (current.date() === 1) {
+      style.border = '1px solid #1890ff';
+      style.borderRadius = '50%';
+    }
+    return (
+      <div className="ant-picker-cell-inner" style={style}>
+        {current.date()}
+      </div>
+    );
+  }}
+/>
+```
+
+### 预设范围
+
+```tsx
+import { DatePicker } from '@baidu/aiop-ui';
+import dayjs from 'dayjs';
+
+const { RangePicker } = DatePicker;
+
+<RangePicker
+  presets={[
+    { label: '最近7天', value: [dayjs().add(-7, 'd'), dayjs()] },
+    { label: '最近30天', value: [dayjs().add(-30, 'd'), dayjs()] },
+    { label: '最近90天', value: [dayjs().add(-90, 'd'), dayjs()] },
+  ]}
+/>
+```
+
+## 注意事项
+
+1. **日期库依赖**: 组件使用 `dayjs` 作为日期处理库，请确保项目中已安装 `dayjs` 依赖
+2. **时区处理**: 涉及跨时区场景时，建议统一使用 UTC 时间进行存储和传输
+3. **格式化输出**: `onChange` 回调返回的是 `dayjs` 对象，需要根据业务需求进行格式化
+4. **范围限制**: 使用 `disabledDate` 时注意性能优化，避免复杂计算
+5. **受控组件**: 在受控模式下，需要在 `onChange` 中更新 `value` 值
+6. **RangePicker 引用**: RangePicker 是 DatePicker 的静态属性，使用时需要先解构：`const { RangePicker } = DatePicker`
+
+## 常见问题
+
+### 如何获取格式化的日期字符串？
+
+```tsx
+<DatePicker 
+  onChange={(date, dateString) => {
+    console.log(dateString); // 格式化后的字符串
+    console.log(date.format('YYYY-MM-DD')); // 使用 dayjs 格式化
+  }}
+/>
+```
+
+### 如何设置默认显示当前日期？
+
+```tsx
+import dayjs from 'dayjs';
+
+<DatePicker defaultValue={dayjs()} />
+```
+
+### 如何实现日期范围限制在某个时间段内？
+
+```tsx
+<DatePicker
+  disabledDate={(current) => {
+    const start = dayjs('2024-01-01');
+    const end = dayjs('2024-12-31');
+    return current < start || current > end;
+  }}
+/>
+```
+
+## 属性与 Figma 样式关联
+
+本节建立组件属性值与 Figma 设计稿样式特征的映射关系，帮助从设计稿快速识别应使用的组件属性。
+
+### size 属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| size="large" | `h-[40px]` | 大尺寸日期选择器 |
+| size="middle" | `h-[32px]` | 中尺寸日期选择器（默认） |
+| size="small" | `h-[24px]` | 小尺寸日期选择器 |
+
+### 扩展样式属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| borderRadius | `rounded-[4px]` | 边框圆角，默认 4px |
+| activeBorderColor | `border-[rgba(56,85,213,1)]` | 激活状态边框颜色，默认为主题色 |
+
+### 状态属性与样式特征映射
+
+| 属性值 | Figma 样式特征 | 说明 |
+|--------|----------------|------|
+| disabled={true} | `opacity-[0.4]`<br/>`cursor-not-allowed`<br/>`bg-[rgba(245,245,247,1)]` | 禁用状态，低透明度灰色背景 |
+| status="error" | `border-[rgba(250,78,62,1)]` | 错误状态，红色边框 |
+| status="warning" | `border-[rgba(255,170,0,1)]` | 警告状态，橙色边框 |
+
+## 特殊样式识别规则
+
+从 Figma 样式快速识别 DatePicker 属性的规则：
+
+```
+尺寸识别：
+h-[40px] → size="large"
+h-[32px] → size="middle" (默认)
+h-[24px] → size="small"
+
+边框圆角识别：
+rounded-[4px] → borderRadius={4} (默认)
+rounded-[6px] → borderRadius={6}
+rounded-[8px] → borderRadius={8}
+
+激活边框颜色识别：
+border-[rgba(56,85,213,1)] → 默认主题色激活边框
+border-[rgba(0,176,89,1)] → 自定义绿色激活边框
+
+状态识别：
+opacity-[0.4] + cursor-not-allowed → disabled={true}
+border-[rgba(250,78,62,1)] → status="error"
+border-[rgba(255,170,0,1)] → status="warning"
+```
+
+## DatePicker 组件外貌描述
+
+> 注意: 在使用 DatePicker 组件前，应充分了解其默认样式，避免当组件自带样式已覆盖设计稿内容时，重复生成相同元素，从而导致页面出现冗余或重复内容。
+
+### 1. 基础外观
+
+- 圆角矩形输入框，圆角 4px
+- 灰色边框
+- 白色背景
+- 右侧默认显示日历图标 (后缀图标)
+- 占位符文本 (默认为 "请选择日期")
+
+### 2. 可变视觉 (Props 控制)
+
+- **size**:
+  - 控制内容: 日期选择器的高度
+  - 默认值: middle
+  - 视觉影响:
+    - large: 高度 40px
+    - middle: 高度 32px
+    - small: 高度 24px
+
+- **disabled**:
+  - 控制内容: 禁用状态
+  - 默认值: false
+  - 视觉影响: true 时背景变为浅灰色，透明度降低，不可交互
+
+- **status**:
+  - 控制内容: 输入框状态
+  - 默认值: 无
+  - 视觉影响:
+    - error: 红色边框
+    - warning: 橙色边框
+
+- **placeholder**:
+  - 控制内容: 占位符文本 (由用户传入)
+  - 默认值: "请选择日期"
+  - 视觉影响: 未选择日期时显示的提示文字
+
+- **suffixIcon**:
+  - 控制内容: 后缀图标 (由用户传入)
+  - 默认值: 日历图标
+  - 视觉影响: 替换默认日历图标
+
+- **allowClear**:
+  - 控制内容: 是否显示清除按钮
+  - 默认值: true
+  - 视觉影响: true 时选中日期后右侧显示清除图标，hover 可清除
+
+- **format**:
+  - 控制内容: 日期格式化显示
+  - 默认值: "YYYY-MM-DD"
+  - 视觉影响: 控制选中日期在输入框中的显示格式
+
+- **showTime**:
+  - 控制内容: 是否显示时间选择
+  - 默认值: false
+  - 视觉影响: true 时可同时选择日期和时间
+
+### 3. 条件渲染元素
+
+- `value` 为空 → 显示占位符文本
+- `value` 存在 → 显示格式化后的日期
+- `allowClear=true` 且 `value` 存在 → hover 时右侧显示清除图标
+- `disabled=true` → 浅灰色背景，不可点击
+- `status="error"` → 红色边框
+- `status="warning"` → 橙色边框
+
+### 4. 模式差异
+
+- **DatePicker 单日期模式** (默认):
+  - 选择单个日期
+  - 输入框显示一个日期值
+  - 点击弹出日期选择面板
+
+- **RangePicker 日期范围模式** (DatePicker.RangePicker):
+  - 选择日期范围 (开始日期和结束日期)
+  - 输入框分为两部分，中间有分隔符
+  - 点击弹出范围选择面板
+  - 支持快捷选择预设范围
+
+### 5. 状态样式
+
+- **normal**: 灰色边框，白色背景
+- **hover**: 边框颜色变为主题色悬停态
+- **focus**: 主题色边框，可能带有阴影效果
+- **disabled**: 浅灰色背景，降低透明度，不可点击
+- **error**: 红色边框
+- **warning**: 橙色边框
